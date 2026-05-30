@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Rustique — Handcrafted Culinary Gatherings</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-logo-base: #FAF5EB;       /* Exact logo cream background */
+      --color-charcoal: #110B07;     /* High-contrast rich charred oak black */
+      --color-gold-warm: #C49A45;    /* Deep brushed brass luster */
+      --color-clay: #7A695C;         /* Earthy raw linen slate */
+      --color-input-bg: #FCFAF0;     /* Bright, clean field interior */
+      --transition-luxurious: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-logo-base);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--color-charcoal);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+
+    .atelier-container {
+      width: 100%;
+      max-width: 440px;
+      padding: 20px 8px;
+    }
+
+    .brand-logo-frame {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .brand-logo-img {
+      max-width: 200px;
+      height: auto;
+    }
+
+    .floorplan-title-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--color-charcoal);
+      padding-bottom: 8px;
+    }
+
+    .floorplan-heading {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      font-weight: 600;
+    }
+
+    .floorplan-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      font-style: italic;
+      color: var(--color-clay);
+    }
+
+    /* PREMIUM MATERIAL ROOM CANVAS */
+    .room-footprint-grid {
+      position: relative;
+      border: 1px solid rgba(17, 11, 7, 0.12);
+      background-color: #F6F3E5;
+      background-image: radial-gradient(circle at 50% 40%, #FAF8F0 0%, #EFEAD3 100%);
+      padding: 54px 36px;
+      margin-bottom: 12px;
+      box-shadow: 
+        0 24px 48px rgba(17, 11, 7, 0.07),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      border-radius: 16px;
+    }
+
+    .interactive-floorplan-mesh {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px 44px;
+    }
+
+    .blueprint-table-node {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .furniture-top-surface {
+      width: 96px;
+      height: 64px;
+      border-radius: 8px;
+      z-index: 5;
+      position: relative;
+      transition: var(--transition-luxurious);
+      background: 
+        linear-gradient(90deg, rgba(139,115,85,0.12) 1px, transparent 1px),
+        linear-gradient(0deg, #EADFC6, #E2D5B7 50%, #D9CBAB 100%);
+      background-size: 4px 100%, 100% 100%;
+      box-shadow: 
+        0 6px 14px rgba(40, 30, 20, 0.14),
+        0 14px 28px rgba(40, 30, 20, 0.08),
+        inset 0 1px 1px rgba(255,255,255,0.45),
+        inset 0 -2px 4px rgba(0,0,0,0.06);
+      border: 1px solid rgba(90, 75, 60, 0.25);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .furniture-top-surface::before {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      right: 5px;
+      bottom: 5px;
+      border: 1px solid rgba(120, 100, 80, 0.12);
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .surface-title-text {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+      color: rgba(17, 11, 7, 0.6);
+      z-index: 6;
+      transition: var(--transition-luxurious);
+    }
+
+    .blueprint-chair-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .chair-unit {
+      position: absolute;
+      width: 26px;
+      height: 24px;
+      background-color: #FAF9F2;
+      border: 1px solid rgba(17, 11, 7, 0.15);
+      border-radius: 6px 6px 4px 4px;
+      box-shadow: 0 4px 10px rgba(17,11,7,0.06);
+      left: 50%;
+      transform: translateX(-50%);
+      transition: var(--transition-luxurious);
+    }
+
+    .chair-unit::after {
+      content: '';
+      position: absolute;
+      background-color: rgba(17, 11, 7, 0.12);
+      top: 4px;
+      left: 5px;
+      right: 5px;
+      height: 2px;
+      border-radius: 1px;
+    }
+
+    .slab-chair-top { top: -15px; }
+    .slab-chair-bottom { bottom: -15px; }
+
+    .blueprint-table-node:hover .furniture-top-surface {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(40, 30, 20, 0.16), 0 24px 36px rgba(40, 30, 20, 0.1);
+      background-color: #EFE4C9;
+    }
+
+    .blueprint-table-node.is-active-selected .furniture-top-surface {
+      transform: translateY(-4px) scale(1.02);
+      border-color: var(--color-gold-warm);
+      box-shadow: 0 0 0 4px rgba(196, 154, 69, 0.25), 0 14px 28px rgba(40, 30, 20, 0.18);
+      background: #F2E7CB;
+    }
+    .blueprint-table-node.is-active-selected .surface-title-text {
+      color: var(--color-gold-warm);
+      font-weight: 600;
+    }
+    .blueprint-table-node.is-active-selected .chair-unit {
+      border-color: var(--color-gold-warm);
+    }
+
+    .seating-guide-banner {
+      font-size: 11px;
+      color: var(--color-clay);
+      font-style: italic;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .form-field-group { margin-bottom: 28px; }
+    .form-dual-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; font-weight: 600; }
+    input, select, textarea { width: 100%; padding: 16px; border: 1px solid var(--color-charcoal); background-color: var(--color-input-bg); font-family: inherit; font-size: 14px; color: var(--color-charcoal); outline: none; border-radius: 0px; transition: var(--transition-luxurious); }
+    textarea { height: 90px; resize: none; }
+    input:focus, select:focus, textarea:focus { background-color: #FFFFFF; box-shadow: 4px 4px 0px var(--color-charcoal); transform: translate(-2px, -2px); }
+
+    .menu-harvest-panel { border: 1px solid var(--color-charcoal); background-color: var(--color-input-bg); padding: 20px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .harvest-meta-title { font-size: 14px; font-weight: 600; }
+    .harvest-meta-desc { font-size: 11px; color: var(--color-clay); margin-top: 4px; line-height: 1.4; }
+    .quantity-stepper-engine { display: flex; align-items: center; gap: 14px; border: 1px solid var(--color-charcoal); background-color: #FFFFFF; padding: 4px 8px; }
+    .stepper-action-trigger { background: none; border: none; font-size: 16px; font-weight: 600; cursor: pointer; width: 24px; height: 24px; }
+    .stepper-current-value { font-size: 14px; font-weight: 600; min-width: 14px; text-align: center; }
+
+    .curated-beverage-statement { border-left: 2px solid var(--color-gold-warm); padding-left: 16px; margin: 24px 0 36px 0; }
+    .beverage-quote-body { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-style: italic; line-height: 1.5; }
+
+    .submit-button-trigger { width: 100%; padding: 20px; background-color: var(--color-charcoal); color: var(--bg-logo-base); border: 1px solid var(--color-charcoal); font-family: inherit; font-size: 12px; text-transform: uppercase; letter-spacing: 0.25em; font-weight: 600; cursor: pointer; margin-top: 24px; transition: var(--transition-luxurious); }
+    .submit-button-trigger:hover { background-color: var(--color-gold-warm); color: var(--color-charcoal); }
+    .submit-button-trigger:disabled { background-color: var(--color-clay); color: rgba(255,255,255,0.4); cursor: not-allowed; }
+
+    .confirmation-state-box { text-align: center; padding: 40px 10px; border: 2px dashed var(--color-charcoal); }
+    .state-title-accent { font-family: 'Cormorant Garamond', serif; font-size: 36px; margin-bottom: 16px; }
+    .state-description-para { font-size: 14px; line-height: 1.6; color: var(--color-clay); margin-bottom: 32px; }
+    .digital-receipt-tag { background-color: var(--color-charcoal); color: var(--bg-logo-base); padding: 16px 32px; font-size: 20px; font-family: 'Cormorant Garamond', serif; }
+    .concierge-hotline { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--color-charcoal); text-decoration: none; font-weight: 500; display: inline-block; margin-top: 10px; border-bottom: 1px solid var(--color-charcoal); }
+  </style>
+</head>
+<body>
+
+  <div class="atelier-container" id="formContainer">
+    <div class="brand-logo-frame">
+      <img src="logo.jpg" alt="The Rustique Logo" class="brand-logo-img">
+    </div>
+
+    <form id="reservationForm">
+      
+      <div class="floorplan-title-wrapper" style="margin-bottom: 24px;">
+        <div class="floorplan-heading">Select Seating Assignments</div>
+        <div class="floorplan-sub">Tap table layouts directly to secure</div>
+      </div>
+
+      <div class="room-footprint-grid">
+        <div class="interactive-floorplan-mesh">
+          <div class="blueprint-table-node" onclick="toggleTableSelection('1')" id="node-t1">
+            <div class="furniture-top-surface"><span class="surface-title-text">Table 1</span></div>
+            <div class="blueprint-chair-container">
+              <div class="chair-unit slab-chair-top"></div>
+              <div class="chair-unit slab-chair-bottom"></div>
+            </div>
+          </div>
+          <div class="blueprint-table-node" onclick="toggleTableSelection('2')" id="node-t2">
+            <div class="furniture-top-surface"><span class="surface-title-text">Table 2</span></div>
+            <div class="blueprint-chair-container">
+              <div class="chair-unit slab-chair-top"></div>
+              <div class="chair-unit slab-chair-bottom"></div>
+            </div>
+          </div>
+          <div class="blueprint-table-node" onclick="toggleTableSelection('3')" id="node-t3">
+            <div class="furniture-top-surface"><span class="surface-title-text">Table 3</span></div>
+            <div class="blueprint-chair-container">
+              <div class="chair-unit slab-chair-top"></div>
+              <div class="chair-unit slab-chair-bottom"></div>
+            </div>
+          </div>
+          <div class="blueprint-table-node" onclick="toggleTableSelection('4')" id="node-t4">
+            <div class="furniture-top-surface"><span class="surface-title-text">Table 4</span></div>
+            <div class="blueprint-chair-container">
+              <div class="chair-unit slab-chair-top"></div>
+              <div class="chair-unit slab-chair-bottom"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="seating-guide-banner" id="seatingInstructionText">
+        Please specify your total table attendance size below...
+      </div>
+
+      <div class="form-field-group">
+        <label for="partySizeSelect">Total Table Attendance</label>
+        <select id="partySizeSelect" onchange="handlePartySizeChange()" required>
+          <option value="" disabled selected>Select number of guests...</option>
+          <option value="1">1 Person</option>
+          <option value="2">2 People (1 Table required)</option>
+          <option value="3">3 People (2 Tables required)</option>
+          <option value="4">4 People (2 Tables required)</option>
+          <option value="5">5 People (3 Tables required)</option>
+          <option value="6">6 People (3 Tables required)</option>
+        </select>
+      </div>
+
+      <div class="form-field-group">
+        <label for="guestNameInput">Patron Identity</label>
+        <input type="text" id="guestNameInput" placeholder="Enter full name" required>
+      </div>
+
+      <div class="form-field-group">
+        <label for="contactLineInput">Direct Contact Number</label>
+        <input type="tel" id="contactLineInput" placeholder="Include international prefix" required>
+      </div>
+
+      <div class="form-dual-row">
+        <div class="form-field-group">
+          <label for="calendarDateInput">Target Date</label>
+          <input type="date" id="calendarDateInput" required>
+        </div>
+        <div class="form-field-group">
+          <label for="timeSlotSelect">Seating Window</label>
+          <select id="timeSlotSelect" required>
+            <option value="07:00 AM">07:00 AM</option>
+            <option value="08:30 AM">08:30 AM</option>
+            <option value="10:00 AM">10:00 AM</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-field-group" style="margin-top: 40px; margin-bottom: 12px;">
+        <div class="floorplan-title-wrapper" style="margin-bottom: 20px;">
+          <div class="floorplan-heading">Curated Provisions</div>
+          <div class="floorplan-sub">Morning Harvest Sets</div>
+        </div>
+        
+        <div class="menu-harvest-panel">
+          <div>
+            <span class="harvest-meta-title">Sri Lankan Heritage Set</span>
+            <p class="harvest-meta-desc">Aromatic dhal curry, chicken broth, honey roti.</p>
+          </div>
+          <div class="quantity-stepper-engine">
+            <button type="button" class="stepper-action-trigger" onclick="adjustHarvestValue('sl', -1)">-</button>
+            <span id="slHarvestCounter" class="stepper-current-value">1</span>
+            <button type="button" class="stepper-action-trigger" onclick="adjustHarvestValue('sl', 1)">+</button>
+          </div>
+        </div>
+
+        <div class="menu-harvest-panel">
+          <div>
+            <span class="harvest-meta-title">Western Artisanal Set</span>
+            <p class="harvest-meta-desc">Wood-fired sourdough, hand-churned butter, honey waffles.</p>
+          </div>
+          <div class="quantity-stepper-engine">
+            <button type="button" class="stepper-action-trigger" onclick="adjustHarvestValue('w', -1)">-</button>
+            <span id="wHarvestCounter" class="stepper-current-value">1</span>
+            <button type="button" class="stepper-action-trigger" onclick="adjustHarvestValue('w', 1)">+</button>
+          </div>
+        </div>
+
+        <div class="curated-beverage-statement">
+          <p class="beverage-quote-body">"Slow-brewed coffees, single-origin Ceylon teas, and local orchard juices are arranged dynamically to match the morning harvest."</p>
+        </div>
+      </div>
+
+      <div class="floorplan-title-wrapper">
+        <div class="floorplan-heading">The Curation Ledger</div>
+        <div class="floorplan-sub">Allergies & Notes</div>
+      </div>
+
+      <div class="form-field-group" style="margin-top: 16px;">
+        <label for="allergyInput">Dietary Adjustments & Severe Allergies</label>
+        <textarea id="allergyInput" placeholder="Kindly declare any critical allergies here..."></textarea>
+      </div>
+
+      <div class="form-field-group">
+        <label for="milestoneInput">Milestones & Special Celebrations</label>
+        <input type="text" id="milestoneInput" placeholder="Celebrating an anniversary or birthday? Let us know...">
+      </div>
+
+      <button type="submit" class="submit-button-trigger" id="masterSubmitBtn">Request Table Verification</button>
+    </form>
+  </div>
+
+  <script>
+    const SYSTEM_ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbx0uOA5JaMNex6jonJIbgROl8zUuSELoaVti8tLNqmR3i4_KycRZ4AAUEP5oqEwq_2JCA/exec";
+    let counts = { sl: 1, w: 1 };
+    let selectedTablesArray = [];
+
+    function adjustHarvestValue(category, offset) {
+      counts[category] = Math.max(0, counts[category] + offset);
+      document.getElementById(`${category}HarvestCounter`).innerText = counts[category];
+    }
+
+    function getRequiredTableCount(paxValue) {
+      if (!paxValue) return 0;
+      if (paxValue <= 2) return 1;
+      if (paxValue <= 4) return 2;
+      return 3;
+    }
+
+    function updateInstructionBanner() {
+      const partySize = parseInt(document.getElementById('partySizeSelect').value);
+      const banner = document.getElementById('seatingInstructionText');
+      if (isNaN(partySize)) {
+        banner.innerHTML = "Please specify your total table attendance size below...";
+        return;
+      }
+      const requiredCount = getRequiredTableCount(partySize);
+      const currentlySelectedCount = selectedTablesArray.length;
+
+      if (currentlySelectedCount === 0) {
+        banner.innerHTML = `Kindly select <b>${requiredCount} table${requiredCount > 1 ? 's' : ''}</b> on the layout map above.`;
+        banner.style.color = "var(--color-clay)";
+      } else if (currentlySelectedCount < requiredCount) {
+        banner.innerHTML = `Select <b>${requiredCount - currentlySelectedCount} more table${(requiredCount - currentlySelectedCount) > 1 ? 's' : ''}</b> to host your party of ${partySize}.`;
+        banner.style.color = "var(--color-gold-warm)";
+      } else if (currentlySelectedCount === requiredCount) {
+        banner.innerHTML = `Perfect alignment. Your selected seating array is fully optimized!`;
+        banner.style.color = "green";
+      } else {
+        banner.innerHTML = `You have selected too many tables. Please tap to deselect ${currentlySelectedCount - requiredCount}.`;
+        banner.style.color = "red";
+      }
+    }
+
+    function handlePartySizeChange() {
+      selectedTablesArray = [];
+      document.querySelectorAll('.blueprint-table-node').forEach(node => {
+        node.classList.remove('is-active-selected');
+      });
+      updateInstructionBanner();
+    }
+
+    function toggleTableSelection(tableId) {
+      const partySize = parseInt(document.getElementById('partySizeSelect').value);
+      if (isNaN(partySize)) {
+        alert("Please select your total table attendance size first.");
+        document.getElementById('partySizeSelect').focus();
+        return;
+      }
+      const requiredCount = getRequiredTableCount(partySize);
+      const searchIndex = selectedTablesArray.indexOf(tableId);
+
+      if (searchIndex > -1) {
+        selectedTablesArray.splice(searchIndex, 1);
+        document.getElementById(`node-t${tableId}`).classList.remove('is-active-selected');
+      } else {
+        if (selectedTablesArray.length >= requiredCount) {
+          const oldestTableId = selectedTablesArray.shift();
+          document.getElementById(`node-t${oldestTableId}`).classList.remove('is-active-selected');
+        }
+        selectedTablesArray.push(tableId);
+        document.getElementById(`node-t${tableId}`).classList.add('is-active-selected');
+      }
+      updateInstructionBanner();
+    }
+
+    const inputDateElement = document.getElementById('calendarDateInput');
+    const now = new Date();
+    if (now.getHours() >= 10) {
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      inputDateElement.min = tomorrow.toISOString().split('T')[0];
+    } else {
+      inputDateElement.min = now.toISOString().split('T')[0];
+    }
+
+    function stripHTML(text) {
+      return text.replace(/[^a-zA-Z0-9\s.\-+?,()]/g, "");
+    }
+
+    document.getElementById('reservationForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const partySize = parseInt(document.getElementById('partySizeSelect').value);
+      if (isNaN(partySize)) {
+        alert("Please complete the required Total Table Attendance section.");
+        return;
+      }
+      const requiredCount = getRequiredTableCount(partySize);
+      if (selectedTablesArray.length !== requiredCount) {
+        alert(`Your party of ${partySize} requires exactly ${requiredCount} table allocations.`);
+        return;
+      }
+      if ((counts.sl + counts.w) === 0) {
+        alert("Please select at least one morning harvest set to commit your table reservation.");
+        return;
+      }
+
+      const button = document.getElementById('masterSubmitBtn');
+      button.disabled = true;
+      button.innerText = "Transmitting Request...";
+
+      selectedTablesArray.sort();
+      const tableStringOutput = selectedTablesArray.map(id => `Table ${id}`).join(", ");
+
+      const packet = {
+        tableNum: tableStringOutput, 
+        guestName: stripHTML(document.getElementById('guestNameInput').value),
+        contact: stripHTML(document.getElementById('contactLineInput').value),
+        date: inputDateElement.value,
+        timeSlot: document.getElementById('timeSlotSelect').value,
+        pax: partySize.toString(),
+        menuChoice: `${counts.sl} Local, ${counts.w} Western`,
+        notes: `Allergies: ${stripHTML(document.getElementById('allergyInput').value) || 'None'} | Notes: ${stripHTML(document.getElementById('milestoneInput').value) || 'None'}`
+      };
+
+      fetch(SYSTEM_ENDPOINT_URL, { method: "POST", mode: "cors", body: JSON.stringify(packet) })
+      .then(res => res.json())
+      .then(payload => {
+        if (payload.status === "success") {
+          document.getElementById('formContainer').innerHTML = `
+            <div class="confirmation-state-box">
+              <h2 class="state-title-accent">Seating Verified</h2>
+              <p class="state-description-para">Your slot has been successfully cleared on our ledger. Fresh linens and curated heirloom table profiles await your presence.</p>
+              <div class="digital-receipt-tag">${payload.bookingId}</div>
+            </div>`;
+        } else if (payload.status === "full") {
+          document.getElementById('formContainer').innerHTML = `
+            <div class="confirmation-state-box">
+              <h2 class="state-title-accent">Allocation Cap Reached</h2>
+              <p class="state-description-para">To respect our intimate footprint constraints, automated web clearances are restricted.</p>
+              <a href="tel:+94702986611" class="concierge-hotline">+94 70 298 6611</a>
+            </div>`;
+        } else { throw new Error(); }
+      })
+      .catch(() => {
+        alert("System connection timeout.");
+        button.disabled = false;
+        button.innerText = "Request Table Verification";
+      });
+    });
+  </script>
+</body>
+</html>
