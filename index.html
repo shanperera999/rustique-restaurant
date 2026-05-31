@@ -240,8 +240,6 @@
     .confirmation-state-box { text-align: center; padding: 40px 10px; border: 2px dashed var(--color-charcoal); }
     .state-title-accent { font-family: 'Cormorant Garamond', serif; font-size: 36px; margin-bottom: 16px; }
     .state-description-para { font-size: 14px; line-height: 1.6; color: var(--color-clay); margin-bottom: 32px; }
-    .digital-receipt-tag { background-color: var(--color-charcoal); color: var(--bg-logo-base); padding: 16px 32px; font-size: 20px; font-family: 'Cormorant Garamond', serif; }
-    .concierge-hotline { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--color-charcoal); text-decoration: none; font-weight: 500; display: inline-block; margin-top: 10px; border-bottom: 1px solid var(--color-charcoal); }
   </style>
 </head>
 <body>
@@ -252,7 +250,6 @@
     </div>
 
     <form id="reservationForm">
-      
       <div class="floorplan-title-wrapper" style="margin-bottom: 24px;">
         <div class="floorplan-heading">Select Seating Assignments</div>
         <div class="floorplan-sub">Tap table layouts directly to secure</div>
@@ -510,26 +507,23 @@
         notes: `Allergies: ${stripHTML(document.getElementById('allergyInput').value) || 'None'} | Notes: ${stripHTML(document.getElementById('milestoneInput').value) || 'None'}`
       };
 
-// Change the fetch call to this:
-fetch(SYSTEM_ENDPOINT_URL, { 
-    method: "POST", 
-    mode: "no-cors", // Switch back to no-cors
-    body: JSON.stringify(packet) 
-})
-.then(() => {
-    // Since we are using no-cors, we can't read the response JSON,
-    // so we assume success if the request finishes.
-    document.getElementById('formContainer').innerHTML = `
-        <div class="confirmation-state-box">
+      fetch(SYSTEM_ENDPOINT_URL, { 
+        method: "POST", 
+        mode: "no-cors", 
+        body: JSON.stringify(packet) 
+      })
+      .then(() => {
+        document.getElementById('formContainer').innerHTML = `
+          <div class="confirmation-state-box">
             <h2 class="state-title-accent">Seating Verified</h2>
             <p class="state-description-para">Your request has been received. Our team will contact you shortly.</p>
-        </div>`;
-})
-.catch(err => {
-    alert("Connection issue, but request may have been sent. Please check your email.");
-    button.disabled = false;
-    button.innerText = "Request Table Verification";
-});
+          </div>`;
+      })
+      .catch(err => {
+        alert("Connection issue, but request may have been sent. Please check your email.");
+        button.disabled = false;
+        button.innerText = "Request Table Verification";
+      });
     });
   </script>
 </body>
