@@ -390,28 +390,7 @@
     const SYSTEM_ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbwiuCwSo-PqZggVTthU6NWXvH7NhE3LDi0ZJERIBj9O0-i0RK6M0SR4Ca9sNl0qkPY0fA/exec";
     let counts = { sl: 1, w: 1 };
     let selectedTablesArray = [];
-    document.getElementById('reservationForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    // Prepare the data as URL Parameters (The "no-cors" safe way)
-    const formData = new URLSearchParams();
-    formData.append('tableNum', selectedTablesArray.map(id => "Table " + id).join(", "));
-    formData.append('guestName', document.getElementById('guestNameInput').value);
-    formData.append('contact', document.getElementById('contactLineInput').value);
-    formData.append('date', document.getElementById('calendarDateInput').value);
-    formData.append('timeSlot', document.getElementById('timeSlotSelect').value);
-    formData.append('pax', document.getElementById('partySizeSelect').value);
-    formData.append('menuChoice', counts.sl + " Local, " + counts.w + " Western");
-    formData.append('notes', document.getElementById('allergyInput').value + " | " + document.getElementById('milestoneInput').value);
-
-    fetch(SYSTEM_ENDPOINT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      body: formData
-    })
-    .then(() => {
-      document.getElementById('formContainer').innerHTML = "<h2>Success</h2><p>Request received.</p>";
-
+    
     function adjustHarvestValue(category, offset) {
       counts[category] = Math.max(0, counts[category] + offset);
       document.getElementById(`${category}HarvestCounter`).innerText = counts[category];
