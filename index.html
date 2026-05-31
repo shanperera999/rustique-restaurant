@@ -476,36 +476,11 @@
     }
 
     document.getElementById('reservationForm').addEventListener('submit', function(event) {
-  event.preventDefault();
-  
-  // 1. Prepare Data
-  const packet = {
-    tableNum: selectedTablesArray.map(id => `Table ${id}`).join(", "),
-    guestName: document.getElementById('guestNameInput').value,
-    contact: document.getElementById('contactLineInput').value,
-    date: document.getElementById('calendarDateInput').value,
-    timeSlot: document.getElementById('timeSlotSelect').value,
-    pax: document.getElementById('partySizeSelect').value,
-    menuChoice: `${counts.sl} Local, ${counts.w} Western`,
-    notes: document.getElementById('allergyInput').value
-  };
-
-  // 2. Convert to Form Data
-  const formData = new URLSearchParams(packet).toString();
-
-  // 3. Send
-  fetch(SYSTEM_ENDPOINT_URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: formData
-  })
-  .then(() => {
-    // Show success
-    document.getElementById('formContainer').innerHTML = "<h2>Seating Verified</h2>";
-  })
-  .catch(() => alert("Error submitting. Please try again."));
-});
+      event.preventDefault();
+      const partySize = parseInt(document.getElementById('partySizeSelect').value);
+      if (isNaN(partySize)) {
+        alert("Please complete the required Total Table Attendance section.");
+        return;
       }
       const requiredCount = getRequiredTableCount(partySize);
       if (selectedTablesArray.length !== requiredCount) {
