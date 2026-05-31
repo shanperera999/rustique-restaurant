@@ -298,16 +298,14 @@
       <div class="form-field-group">
         <label for="partySizeSelect">Total Table Attendance</label>
         <select id="partySizeSelect" onchange="handlePartySizeChange()" required>
-  <option value="" disabled selected>Select number of guests...</option>
-  <option value="1">1 Person</option>
-  <option value="2">2 People (1 Table required)</option>
-  <option value="3">3 People (2 Tables required)</option>
-  <option value="4">4 People (2 Tables required)</option>
-  <option value="5">5 People (3 Tables required)</option>
-  <option value="6">6 People (3 Tables required)</option>
-  <option value="7">7 People (4 Tables required)</option>
-  <option value="8">8 People (4 Tables required)</option>
-</select>
+          <option value="" disabled selected>Select number of guests...</option>
+          <option value="1">1 Person</option>
+          <option value="2">2 People (1 Table required)</option>
+          <option value="3">3 People (2 Tables required)</option>
+          <option value="4">4 People (2 Tables required)</option>
+          <option value="5">5 People (3 Tables required)</option>
+          <option value="6">6 People (3 Tables required)</option>
+        </select>
       </div>
 
       <div class="form-field-group">
@@ -390,7 +388,7 @@
   </div>
 
   <script>
-    const SYSTEM_ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbzB4DZIWZpVUobMumvJjbxjuNz6epMVPP0E6d0_LTth7Trz5evvB59f8nndg7b9Uxy8/exec";
+    const SYSTEM_ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbwUDBIpH0YmALEMmmpIqMDeuhwVaQ_gioCv6W6v6w28WwsWEq3XIpCpSUoW0GYE3ZZl/exec";
     let counts = { sl: 1, w: 1 };
     let selectedTablesArray = [];
 
@@ -399,12 +397,11 @@
       document.getElementById(`${category}HarvestCounter`).innerText = counts[category];
     }
 
-   function getRequiredTableCount(paxValue) {
-  if (paxValue <= 2) return 1;
-  if (paxValue <= 4) return 2;
-  if (paxValue <= 6) return 3;
-  return 4; // Supports up to 8 pax
-}
+    function getRequiredTableCount(paxValue) {
+      if (!paxValue) return 0;
+      if (paxValue <= 2) return 1;
+      if (paxValue <= 4) return 2;
+      return 3;
     }
 
     function updateInstructionBanner() {
@@ -502,42 +499,34 @@
       selectedTablesArray.sort();
       const tableStringOutput = selectedTablesArray.map(id => `Table ${id}`).join(", ");
 
-   const packet = {
-  tableNum: tableStringOutput, 
-  guestName: stripHTML(document.getElementById('guestNameInput').value),
-  contact: stripHTML(document.getElementById('contactLineInput').value),
-  date: inputDateElement.value,
-  timeSlot: document.getElementById('timeSlotSelect').value,
-  pax: partySize.toString(),
-  slCount: counts.sl,
-  wCount: counts.w,
-  menuChoice: `${counts.sl} Local, ${counts.w} Western`,
-  notes: `Allergies: ${stripHTML(document.getElementById('allergyInput').value) || 'None'} | Notes: ${stripHTML(document.getElementById('milestoneInput').value) || 'None'}`
-};
+      const packet = {
+        tableNum: tableStringOutput, 
+        guestName: stripHTML(document.getElementById('guestNameInput').value),
+        contact: stripHTML(document.getElementById('contactLineInput').value),
+        date: inputDateElement.value,
+        timeSlot: document.getElementById('timeSlotSelect').value,
+        pax: partySize.toString(),
+        menuChoice: `${counts.sl} Local, ${counts.w} Western`,
+        notes: `Allergies: ${stripHTML(document.getElementById('allergyInput').value) || 'None'} | Notes: ${stripHTML(document.getElementById('milestoneInput').value) || 'None'}`
       };
 
       // Change the fetch call to this:
-// REPLACE your current fetch block with this:
 fetch(SYSTEM_ENDPOINT_URL, { 
-  method: "POST", 
-  mode: "no-cors", 
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(packet) 
+    method: "POST", 
+    mode: "no-cors", // Switch back to no-cors
+    body: JSON.stringify(packet) 
 })
 .then(() => {
-    // Because mode is 'no-cors', we cannot read the response, 
-    // so we assume success if the request completed.
+    // Since we are using no-cors, we can't read the response JSON,
+    // so we assume success if the request finishes.
     document.getElementById('formContainer').innerHTML = `
         <div class="confirmation-state-box">
-          <h2 class="state-title-accent">Seating Verified</h2>
-          <p class="state-description-para">Your request has been received. Our team will contact you shortly.</p>
+            <h2 class="state-title-accent">Seating Verified</h2>
+            <p class="state-description-para">Your request has been received. Our team will contact you shortly.</p>
         </div>`;
 })
-.catch((err) => {
-    console.error("Error:", err);
-    alert("System connection error. Please try again.");
+.catch(err => {
+    alert("Connection issue, but request may have been sent. Please check your email.");
     button.disabled = false;
     button.innerText = "Request Table Verification";
 });
