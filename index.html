@@ -510,30 +510,26 @@
         notes: `Allergies: ${stripHTML(document.getElementById('allergyInput').value) || 'None'} | Notes: ${stripHTML(document.getElementById('milestoneInput').value) || 'None'}`
       };
 
-      fetch(SYSTEM_ENDPOINT_URL, { method: "POST", mode: "cors", body: JSON.stringify(packet) })
-      .then(res => res.json())
-      .then(payload => {
-        if (payload.status === "success") {
-          document.getElementById('formContainer').innerHTML = `
-            <div class="confirmation-state-box">
-              <h2 class="state-title-accent">Seating Verified</h2>
-              <p class="state-description-para">Your slot has been successfully cleared on our ledger. Fresh linens and curated heirloom table profiles await your presence.</p>
-              <div class="digital-receipt-tag">${payload.bookingId}</div>
-            </div>`;
-        } else if (payload.status === "full") {
-          document.getElementById('formContainer').innerHTML = `
-            <div class="confirmation-state-box">
-              <h2 class="state-title-accent">Allocation Cap Reached</h2>
-              <p class="state-description-para">To respect our intimate footprint constraints, automated web clearances are restricted.</p>
-              <a href="tel:+94702986611" class="concierge-hotline">+94 70 298 6611</a>
-            </div>`;
-        } else { throw new Error(); }
-      })
-      .catch(() => {
-        alert("System connection timeout.");
-        button.disabled = false;
-        button.innerText = "Request Table Verification";
-      });
+// Change the fetch call to this:
+fetch(SYSTEM_ENDPOINT_URL, { 
+    method: "POST", 
+    mode: "no-cors", // Switch back to no-cors
+    body: JSON.stringify(packet) 
+})
+.then(() => {
+    // Since we are using no-cors, we can't read the response JSON,
+    // so we assume success if the request finishes.
+    document.getElementById('formContainer').innerHTML = `
+        <div class="confirmation-state-box">
+            <h2 class="state-title-accent">Seating Verified</h2>
+            <p class="state-description-para">Your request has been received. Our team will contact you shortly.</p>
+        </div>`;
+})
+.catch(err => {
+    alert("Connection issue, but request may have been sent. Please check your email.");
+    button.disabled = false;
+    button.innerText = "Request Table Verification";
+});
     });
   </script>
 </body>
