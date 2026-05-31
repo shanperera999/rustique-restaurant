@@ -509,23 +509,20 @@
         notes: `Allergies: ${stripHTML(document.getElementById('allergyInput').value) || 'None'} | Notes: ${stripHTML(document.getElementById('milestoneInput').value) || 'None'}`
       };
 
-      fetch(SYSTEM_ENDPOINT_URL, { 
-        method: "POST", 
-        mode: "no-cors", 
-        body: JSON.stringify(packet) 
-      })
-      .then(() => {
-        document.getElementById('formContainer').innerHTML = `
-          <div class="confirmation-state-box">
-            <h2 class="state-title-accent">Seating Verified</h2>
-            <p class="state-description-para">Your request has been received. Our team will contact you shortly.</p>
-          </div>`;
-      })
-      .catch(err => {
-        alert("Connection issue, but request may have been sent. Please check your email.");
-        button.disabled = false;
-        button.innerText = "Request Table Verification";
-      });
+    fetch(SYSTEM_ENDPOINT_URL, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(packet)
+})
+.then(response => response.text())
+.then(data => {
+  console.log("Response from server:", data);
+  alert("Server said: " + data);
+})
+.catch(error => {
+  console.error("Error:", error);
+  alert("Fetch failed. Check the console (F12).");
+});
     });
   </script>
 </body>
