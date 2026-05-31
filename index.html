@@ -511,27 +511,29 @@
       };
 
       // Change the fetch call to this:
-// Locate this block in your HTML script section and replace it
+// REPLACE your current fetch block with this:
 fetch(SYSTEM_ENDPOINT_URL, { 
   method: "POST", 
-  mode: "no-cors", // Changing to no-cors often resolves 401 issues in Apps Script
+  mode: "no-cors", 
   headers: {
     "Content-Type": "application/json"
   },
   body: JSON.stringify(packet) 
 })
 .then(() => {
-    // Note: With 'no-cors', you cannot read the JSON response 
-    // You must trigger a success message based on the fact that the request finished
+    // Because mode is 'no-cors', we cannot read the response, 
+    // so we assume success if the request completed.
     document.getElementById('formContainer').innerHTML = `
         <div class="confirmation-state-box">
           <h2 class="state-title-accent">Seating Verified</h2>
           <p class="state-description-para">Your request has been received. Our team will contact you shortly.</p>
         </div>`;
 })
-.catch(() => {
+.catch((err) => {
+    console.error("Error:", err);
     alert("System connection error. Please try again.");
     button.disabled = false;
+    button.innerText = "Request Table Verification";
 });
     });
   </script>
