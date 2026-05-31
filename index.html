@@ -298,14 +298,16 @@
       <div class="form-field-group">
         <label for="partySizeSelect">Total Table Attendance</label>
         <select id="partySizeSelect" onchange="handlePartySizeChange()" required>
-          <option value="" disabled selected>Select number of guests...</option>
-          <option value="1">1 Person</option>
-          <option value="2">2 People (1 Table required)</option>
-          <option value="3">3 People (2 Tables required)</option>
-          <option value="4">4 People (2 Tables required)</option>
-          <option value="5">5 People (3 Tables required)</option>
-          <option value="6">6 People (3 Tables required)</option>
-        </select>
+  <option value="" disabled selected>Select number of guests...</option>
+  <option value="1">1 Person</option>
+  <option value="2">2 People (1 Table required)</option>
+  <option value="3">3 People (2 Tables required)</option>
+  <option value="4">4 People (2 Tables required)</option>
+  <option value="5">5 People (3 Tables required)</option>
+  <option value="6">6 People (3 Tables required)</option>
+  <option value="7">7 People (4 Tables required)</option>
+  <option value="8">8 People (4 Tables required)</option>
+</select>
       </div>
 
       <div class="form-field-group">
@@ -397,11 +399,12 @@
       document.getElementById(`${category}HarvestCounter`).innerText = counts[category];
     }
 
-    function getRequiredTableCount(paxValue) {
-      if (!paxValue) return 0;
-      if (paxValue <= 2) return 1;
-      if (paxValue <= 4) return 2;
-      return 3;
+   function getRequiredTableCount(paxValue) {
+  if (paxValue <= 2) return 1;
+  if (paxValue <= 4) return 2;
+  if (paxValue <= 6) return 3;
+  return 4; // Supports up to 8 pax
+}
     }
 
     function updateInstructionBanner() {
@@ -499,15 +502,18 @@
       selectedTablesArray.sort();
       const tableStringOutput = selectedTablesArray.map(id => `Table ${id}`).join(", ");
 
-      const packet = {
-        tableNum: tableStringOutput, 
-        guestName: stripHTML(document.getElementById('guestNameInput').value),
-        contact: stripHTML(document.getElementById('contactLineInput').value),
-        date: inputDateElement.value,
-        timeSlot: document.getElementById('timeSlotSelect').value,
-        pax: partySize.toString(),
-        menuChoice: `${counts.sl} Local, ${counts.w} Western`,
-        notes: `Allergies: ${stripHTML(document.getElementById('allergyInput').value) || 'None'} | Notes: ${stripHTML(document.getElementById('milestoneInput').value) || 'None'}`
+   const packet = {
+  tableNum: tableStringOutput, 
+  guestName: stripHTML(document.getElementById('guestNameInput').value),
+  contact: stripHTML(document.getElementById('contactLineInput').value),
+  date: inputDateElement.value,
+  timeSlot: document.getElementById('timeSlotSelect').value,
+  pax: partySize.toString(),
+  slCount: counts.sl,
+  wCount: counts.w,
+  menuChoice: `${counts.sl} Local, ${counts.w} Western`,
+  notes: `Allergies: ${stripHTML(document.getElementById('allergyInput').value) || 'None'} | Notes: ${stripHTML(document.getElementById('milestoneInput').value) || 'None'}`
+};
       };
 
       // Change the fetch call to this:
