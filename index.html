@@ -240,6 +240,8 @@
     .confirmation-state-box { text-align: center; padding: 40px 10px; border: 2px dashed var(--color-charcoal); }
     .state-title-accent { font-family: 'Cormorant Garamond', serif; font-size: 36px; margin-bottom: 16px; }
     .state-description-para { font-size: 14px; line-height: 1.6; color: var(--color-clay); margin-bottom: 32px; }
+    .digital-receipt-tag { background-color: var(--color-charcoal); color: var(--bg-logo-base); padding: 16px 32px; font-size: 20px; font-family: 'Cormorant Garamond', serif; }
+    .concierge-hotline { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--color-charcoal); text-decoration: none; font-weight: 500; display: inline-block; margin-top: 10px; border-bottom: 1px solid var(--color-charcoal); }
   </style>
 </head>
 <body>
@@ -250,6 +252,7 @@
     </div>
 
     <form id="reservationForm">
+      
       <div class="floorplan-title-wrapper" style="margin-bottom: 24px;">
         <div class="floorplan-heading">Select Seating Assignments</div>
         <div class="floorplan-sub">Tap table layouts directly to secure</div>
@@ -302,8 +305,6 @@
           <option value="4">4 People (2 Tables required)</option>
           <option value="5">5 People (3 Tables required)</option>
           <option value="6">6 People (3 Tables required)</option>
-          <option value="6">7 People (4 Tables required)</option>
-          <option value="6">8 People (4 Tables required)</option>
         </select>
       </div>
 
@@ -387,10 +388,10 @@
   </div>
 
   <script>
-    const SYSTEM_ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbxPxYPGPoR2K4KfFhbnRmB0ZJEUAYNqoCF6U6_LPul5JhG-jsgi2cyj6a9COlNaYAJwXQ/exec";
+    const SYSTEM_ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbwAcRpGvTwmdmV5irt1WlXHUcTzLhQg0oGJhlGmYr9QvYCte_lNcC6rW44SxcP9fxBuxQ/exec";
     let counts = { sl: 1, w: 1 };
     let selectedTablesArray = [];
-    
+
     function adjustHarvestValue(category, offset) {
       counts[category] = Math.max(0, counts[category] + offset);
       document.getElementById(`${category}HarvestCounter`).innerText = counts[category];
@@ -507,7 +508,7 @@
         pax: partySize.toString(),
         menuChoice: `${counts.sl} Local, ${counts.w} Western`,
         notes: `Allergies: ${stripHTML(document.getElementById('allergyInput').value) || 'None'} | Notes: ${stripHTML(document.getElementById('milestoneInput').value) || 'None'}`
-     };
+      };
 
       fetch(SYSTEM_ENDPOINT_URL, { method: "POST", mode: "cors", body: JSON.stringify(packet) })
       .then(res => res.json())
